@@ -7,10 +7,10 @@
 </head>
 <body>
 
-
+  <!-- drumkit keys -->
   <div class="keys">
-    <div data-key="65" class="key">
-      <kbd>A</kbd>
+    <div data-key="65" class="key"> <!-- Note the data-key corresponds to the particular code a key that each key on the keyboard has. View keycode.info to get code for any key -->
+      <kbd>A</kbd> <!-- "kbd" element typically used to represent keyboard input -->
       <span class="sound">clap</span>
     </div>
     <div data-key="83" class="key">
@@ -47,6 +47,7 @@
     </div>
   </div>
 
+  <!-- drumkit sounds -->
   <audio data-key="65" src="sounds/clap.wav"></audio>
   <audio data-key="83" src="sounds/hihat.wav"></audio>
   <audio data-key="68" src="sounds/kick.wav"></audio>
@@ -59,8 +60,49 @@
 
 <script>
 
-</script>
+  // Function to play sound when key pressed
+  function playSound(event){
+    
+    // Retrieve the auydio element of pressed key
+    const audio = document.querySelector(`audio[data-key="${event.keyCode}`);
+    
+    // Retrieve the key element for the pressed key
+    const key = document.querySelector(`.key[data-key="${event.keyCode}`);
 
+    // Stop if no audio element available
+    if(audio == null){
+      console.log("No sound is available for the key: " + event.key);
+      return;
+    }
+
+    // Play the audio
+    audio.currentTime = 0; // Rewinds already playing audio clip back to the start (if it is already playing)
+    audio.play();
+
+    // Change the style of the key element to show it that it is being played
+    key.classList.add('playing');
+  }
+
+  // Function to reset the style of key and remove "playing" style
+  function removePlayingStyle(event){
+    
+    // Ignore ebvents unless they are the transform
+    if(event.propertyName !== 'transform'){
+      return;
+    };
+    
+    // Remove the playing style from current key. Note that "this" carries object listener was applied to through
+    this.classList.remove('playing');
+  }
+
+  // Create a keydown listener that will play sound when key pressed
+  window.addEventListener('keydown', playSound)
+
+  // Add a listener to each key to check if transitioned
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removePlayingStyle));
+
+</script>
 
 </body>
 </html>
